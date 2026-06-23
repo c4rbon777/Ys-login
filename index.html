@@ -12,56 +12,62 @@
             min-height: 100vh; background-color: #0d1117; 
         }
         .card { 
-            background: white; padding: 30px 20px; border-radius: 12px; 
+            background: white; padding: 25px; border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center;
             width: 85%; max-width: 350px; 
         }
         h2 { margin: 0 0 15px 0; font-size: 1.2em; color: #000; }
-        #ip-kutusu { 
-            background: #f0f4f8; padding: 10px; border: 1px solid #ccd6dd;
-            border-radius: 6px; font-family: monospace; font-size: 0.9em;
-            color: #333; margin-bottom: 20px; word-break: break-all;
+        
+        /* IP alanı ve Giriş alanı stilleri */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { font-size: 0.8em; color: #666; font-weight: bold; }
+        input { 
+            width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc;
+            border-radius: 5px; box-sizing: border-box; font-family: monospace;
         }
+
         .btn {
-            display: block; width: 100%; padding: 12px;
+            display: block; width: 100%; padding: 12px; margin-top: 10px;
             background-color: #007bff; color: white;
             border: none; border-radius: 5px; font-weight: bold;
-            text-decoration: none; cursor: pointer;
+            text-decoration: none; cursor: pointer; text-align: center;
         }
-        .durum { margin-top: 15px; font-size: 0.85em; color: #666; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h2>Ys Giriş</h2>
-        <div id="ip-kutusu">IP alınıyor...</div>
-        <a id="yonlendir" href="#" class="btn">Uygulamaya Git</a>
-        <p class="durum">Uygulama açılıyor...</p>
+        
+        <div class="input-group">
+            <label>Güncel IP (Token):</label>
+            <input type="text" id="token-input" placeholder="IP yükleniyor...">
+        </div>
+
+        <a id="yonlendir" href="#" class="btn" onclick="tiklandiginda()">Uygulamaya Git</a>
     </div>
 
     <script>
-        let guncelIp = "";
-
-        async function ipGuncelle() {
+        // IP adresini çek ve input alanına yerleştir
+        async function ipGetir() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
-                guncelIp = data.ip;
-                
-                document.getElementById('ip-kutusu').innerText = guncelIp;
-                
-                // Yönlendirme linkini oluştur: kuppoys://login?token=IP_ADRESI
-                const link = `kuppoys://login?token=${guncelIp}`;
-                document.getElementById('yonlendir').href = link;
-                
+                document.getElementById('token-input').value = data.ip;
             } catch (e) {
-                document.getElementById('ip-kutusu').innerText = "Bağlantı hatası!";
+                document.getElementById('token-input').placeholder = "Hata oluştu.";
             }
         }
 
-        // Sayfa yüklendiğinde çalıştır
-        ipGuncelle();
+        // Butona tıklandığında input içindeki değeri alıp yönlendir
+        function tiklandiginda() {
+            const token = document.getElementById('token-input').value;
+            const link = `kuppoys://login?token=${token}`;
+            window.location.href = link;
+        }
+
+        // Sayfa açıldığında IP'yi çek
+        ipGetir();
     </script>
 </body>
 </html>
