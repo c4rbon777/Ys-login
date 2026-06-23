@@ -3,71 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ys Giriş</title>
+    <title>Ys Giriş Paneli</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; background-color: #0d1117; 
-        }
-        .card { 
-            background: white; padding: 25px; border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center;
-            width: 85%; max-width: 350px; 
-        }
-        h2 { margin: 0 0 15px 0; font-size: 1.2em; color: #000; }
+        body { font-family: -apple-system, sans-serif; background-color: #0d1117; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #ffffff; color: #333; padding: 25px; border-radius: 12px; width: 85%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h2 { margin-top: 0; font-size: 1.2em; text-align: center; }
         
-        /* IP alanı ve Giriş alanı stilleri */
-        .input-group { margin-bottom: 15px; text-align: left; }
-        label { font-size: 0.8em; color: #666; font-weight: bold; }
-        input { 
-            width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc;
-            border-radius: 5px; box-sizing: border-box; font-family: monospace;
-        }
-
-        .btn {
-            display: block; width: 100%; padding: 12px; margin-top: 10px;
-            background-color: #007bff; color: white;
-            border: none; border-radius: 5px; font-weight: bold;
-            text-decoration: none; cursor: pointer; text-align: center;
-        }
+        /* IP Gösterge Alanı */
+        .ip-box { background: #f0f4f8; padding: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 1.1em; color: #d9534f; margin-bottom: 20px; border: 1px solid #ccd6dd; }
+        
+        /* Ayırıcı Çizgi */
+        hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
+        
+        /* Manuel Token Motoru */
+        .manual-motor label { font-size: 0.8em; color: #666; font-weight: bold; }
+        .manual-motor input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn { display: block; width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Ys Giriş</h2>
-        
-        <div class="input-group">
-            <label>Güncel IP (Token):</label>
-            <input type="text" id="token-input" placeholder="IP yükleniyor...">
-        </div>
+<div class="card">
+    <h2>Güncel IP</h2>
+    <div class="ip-box" id="ip-adresi">Yükleniyor...</div>
 
-        <a id="yonlendir" href="#" class="btn" onclick="tiklandiginda()">Uygulamaya Git</a>
+    <hr>
+
+    <div class="manual-motor">
+        <h2>Token ile Giriş</h2>
+        <label>Token Giriniz:</label>
+        <input type="text" id="manuel-token" placeholder="Token kodunu buraya gir...">
+        <button class="btn" onclick="manuelYonlendir()">Uygulamaya Git</button>
     </div>
+</div>
 
-    <script>
-        // IP adresini çek ve input alanına yerleştir
-        async function ipGetir() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                document.getElementById('token-input').value = data.ip;
-            } catch (e) {
-                document.getElementById('token-input').placeholder = "Hata oluştu.";
+<script>
+    // --- 1. KISIM: IP OTOMATİK İZLEME ---
+    let sonIp = "";
+    async function ipKontrolEt() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            if (data.ip !== sonIp) {
+                document.getElementById('ip-adresi').innerText = data.ip;
+                sonIp = data.ip;
             }
+        } catch (e) {
+            document.getElementById('ip-adresi').innerText = "Hata!";
         }
+    }
+    // Her 30 saniyede bir kontrol et
+    ipKontrolEt();
+    setInterval(ipKontrolEt, 30000);
 
-        // Butona tıklandığında input içindeki değeri alıp yönlendir
-        function tiklandiginda() {
-            const token = document.getElementById('token-input').value;
-            const link = `kuppoys://login?token=${token}`;
-            window.location.href = link;
+    // --- 2. KISIM: MANUEL TOKEN MOTORU ---
+    function manuelYonlendir() {
+        const tokenDegeri = document.getElementById('manuel-token').value;
+        if(tokenDegeri) {
+            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
+        } else {
+            alert("Lütfen geçerli bir token giriniz!");
         }
+    }
+</script>
 
-        // Sayfa açıldığında IP'yi çek
-        ipGetir();
-    </script>
 </body>
 </html>
