@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ys Token Login</title>
+
+<style>
+body{
+background:#0f172a;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:Arial;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:15px;
+text-align:center;
+}
+
+input{
+width:280px;
+padding:12px;
+}
+
+button{
+margin-top:15px;
+padding:12px 30px;
+background:#2563eb;
+color:white;
+border:0;
+border-radius:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Ys Giriş</h2>
+
+<input 
+id="token"
+value="yx-20d1614e-25de-4c25-a380-c743af76fe0a"
+>
+
+<br>
+
+<button onclick="openApp()">
+Uygulamaya Git
+</button>
+
+<p id="msg"></p>
+
+</div>
+
+
+<script>
+
+function openApp(){
+
+let token =
+document.getElementById("token").value;
+
+
+let appLink =
+"kuppoys://login?token=" 
++ encodeURIComponent(token);
+
+
+document.getElementById("msg").innerHTML =
+"Uygulama açılıyor...";
+
+
+window.location.href = appLink;
+
+}
+
+</script>
+
+</body>
+</html>
