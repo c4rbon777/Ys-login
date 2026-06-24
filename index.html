@@ -68,7 +68,7 @@
             gecmis.unshift({ zaman: simdi, token: tokenDegeri, durum: basarili });
             localStorage.setItem('tokenGecmis', JSON.stringify(gecmis.slice(0, 10)));
             
-            window.location.href = `://login?token=${tokenDegeri}`;
+            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
         } else {
             alert("Lütfen geçerli bir token giriniz!");
         }
