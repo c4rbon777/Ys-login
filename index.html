@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ys Giriş Paneli</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background-color: #0d1117; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        body { font-family: -apple-system, sans-serif; background-color: #0d1117; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding-top: 20px; }
+        
+        /* Yeni Eklenen Başlık Stili */
+        .page-title { font-size: 1.8em; margin-bottom: 20px; font-weight: bold; color: #ffffff; text-align: center; }
+
         .card { background: #ffffff; color: #333; padding: 25px; border-radius: 12px; width: 85%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         h2 { margin-top: 0; font-size: 1.2em; text-align: center; }
         
@@ -23,19 +27,21 @@
 </head>
 <body>
 
-<div class="card">
-    <h2>Güncel IP</h2>
-    <div class="ip-box" id="ip-adresi">Yükleniyor...</div>
+    <div class="page-title">YS GİRİŞ EKRANI</div>
 
-    <hr>
+    <div class="card">
+        <h2>Güncel IP</h2>
+        <div class="ip-box" id="ip-adresi">Yükleniyor...</div>
 
-    <div class="manual-motor">
-        <h2>Token ile Giriş</h2>
-        <label>Token Giriniz:</label>
-        <input type="text" id="manuel-token" placeholder="Token kodunu buraya gir...">
-        <button class="btn" onclick="manuelYonlendir()">Uygulamaya Git</button>
+        <hr>
+
+        <div class="manual-motor">
+            <h2>Token ile Giriş</h2>
+            <label>Token Giriniz:</label>
+            <input type="text" id="manuel-token" placeholder="Token kodunu buraya gir...">
+            <button class="btn" onclick="manuelYonlendir()">Uygulamaya Git</button>
+        </div>
     </div>
-</div>
 
 <script>
     // --- 1. KISIM: IP OTOMATİK İZLEME ---
@@ -69,3 +75,4 @@
 
 </body>
 </html>
+
