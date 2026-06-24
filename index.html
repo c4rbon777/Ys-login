@@ -69,7 +69,7 @@
             let gecmis = JSON.parse(localStorage.getItem('tokenGecmis') || '[]');
             gecmis.unshift({ zaman: simdi, token: tokenDegeri, ip: guncelIP });
             localStorage.setItem('tokenGecmis', JSON.stringify(gecmis));
-            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
+            window.location.href = `ys://login?token=${tokenDegeri}`;
         } else {
             alert("Lütfen geçerli bir token giriniz!");
         }
