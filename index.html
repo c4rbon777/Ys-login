@@ -30,10 +30,10 @@
     <div class="ip-box" id="ip-adresi">Yükleniyor...</div>
     <hr>
     <div class="manual-motor">
-        <h2>Ys'ye Token ile Giriş</h2>
+        <h2>Ys'ye Token ile Giriş DEVRE DIŞI</h2>
         <label>Token Giriniz:</label>
         <input type="text" id="manuel-token" placeholder="Token kodunu buraya gir...">
-        <button class="btn" onclick="kaydetVeYonlendir()">GİRİŞ DEVRE DIŞI</button>
+        <button class="btn" onclick="kaydetVeYonlendir()">Uygulamaya Git</button>
         <button class="btn btn-gray" onclick="modalAc()">Geçmişi Görüntüle</button>
     </div>
 </div>
@@ -69,7 +69,7 @@
             let gecmis = JSON.parse(localStorage.getItem('tokenGecmis') || '[]');
             gecmis.unshift({ zaman: simdi, token: tokenDegeri, ip: guncelIP });
             localStorage.setItem('tokenGecmis', JSON.stringify(gecmis));
-            window.location.href = `ys://login?token=${tokenDegeri}`;
+            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
         } else {
             alert("Lütfen geçerli bir token giriniz!");
         }
