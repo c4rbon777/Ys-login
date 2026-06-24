@@ -15,12 +15,11 @@
         .btn { display: block; width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-bottom: 10px; }
         .btn-gray { background-color: #6c757d; }
         
-        /* Modal ve Durum Stilleri */
         #gecmis-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center; }
         .modal-card { background: #fff; padding: 20px; border-radius: 12px; width: 85%; max-width: 350px; position: relative; color: #333; }
         .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; font-weight: bold; color: #333; }
-        #gecmis-liste { max-height: 200px; overflow-y: auto; margin-top: 15px; font-size: 0.85em; }
-        .durum-nokta { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        #gecmis-liste { max-height: 300px; overflow-y: auto; margin-top: 15px; font-size: 0.85em; }
+        .del-btn { color: #dc3545; cursor: pointer; font-weight: bold; margin-left: 10px; border: 1px solid #dc3545; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; }
     </style>
 </head>
 <body>
@@ -33,7 +32,7 @@
         <h2>Ys'ye Token ile Giriş</h2>
         <label>Token Giriniz:</label>
         <input type="text" id="manuel-token" placeholder="Token kodunu buraya gir...">
-        <button class="btn" onclick="kaydetVeYonlendir(true)">Uygulamaya Git</button>
+        <button class="btn" onclick="kaydetVeYonlendir()">Uygulamaya Git</button>
         <button class="btn btn-gray" onclick="modalAc()">Geçmişi Görüntüle</button>
     </div>
 </div>
@@ -43,50 +42,56 @@
         <span class="close-btn" onclick="modalKapat()">&times;</span>
         <h2>Geçmiş Girişler</h2>
         <div id="gecmis-liste"></div>
+        <button class="btn btn-gray" style="margin-top: 15px; font-size: 0.8em; padding: 8px;" onclick="gecmisiTemizle()">Tüm Geçmişi Temizle</button>
     </div>
 </div>
 
 <script>
-    // IP Kontrolü
+    let guncelIP = "Bilinmiyor";
+
     async function ipKontrolEt() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
             const data = await response.json();
-            document.getElementById('ip-adresi').innerText = data.ip;
+            guncelIP = data.ip;
+            document.getElementById('ip-adresi').innerText = guncelIP;
         } catch (e) { document.getElementById('ip-adresi').innerText = "Hata!"; }
     }
     ipKontrolEt();
 
-    // Giriş Fonksiyonu
-    function kaydetVeYonlendir(basarili) {
+    function kaydetVeYonlendir() {
         const tokenDegeri = document.getElementById('manuel-token').value;
         if(tokenDegeri) {
             const simdi = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
             let gecmis = JSON.parse(localStorage.getItem('tokenGecmis') || '[]');
-            
-            // Kayıt ekle
-            gecmis.unshift({ zaman: simdi, token: tokenDegeri, durum: basarili });
+            gecmis.unshift({ zaman: simdi, token: tokenDegeri, ip: guncelIP });
             localStorage.setItem('tokenGecmis', JSON.stringify(gecmis.slice(0, 10)));
-            
-            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
+            window.location.href = `://login?token=${tokenDegeri}`;
         } else {
             alert("Lütfen geçerli bir token giriniz!");
         }
     }
 
-    // Modal Fonksiyonları
+    function satiriSil(index) {
+        let gecmis = JSON.parse(localStorage.getItem('tokenGecmis') || '[]');
+        gecmis.splice(index, 1);
+        localStorage.setItem('tokenGecmis', JSON.stringify(gecmis));
+        modalAc();
+    }
+
     function modalAc() {
         const listeDiv = document.getElementById('gecmis-liste');
         const gecmis = JSON.parse(localStorage.getItem('tokenGecmis') || '[]');
         
         listeDiv.innerHTML = gecmis.length > 0 
-            ? gecmis.map(item => `
-                <div style="border-bottom:1px solid #eee; padding:8px 0; display:flex; align-items:center;">
-                    <span class="durum-nokta" style="background-color: ${item.durum ? '#28a745' : '#dc3545'}"></span>
-                    <div>
-                        <b>${item.zaman}</b><br>
-                        <small>${item.token.substring(0, 15)}...</small>
+            ? gecmis.map((item, index) => `
+                <div style="border-bottom:1px solid #ddd; padding:10px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <b>${item.zaman}</b>
+                        <span class="del-btn" onclick="satiriSil(${index})">Sil</span>
                     </div>
+                    <div style="margin-top:5px; font-size: 0.9em;">IP: ${item.ip}</div>
+                    <div style="margin-top:5px; word-break: break-all; background:#f8f9fa; padding:5px; border-radius:4px; font-family:monospace;">${item.token}</div>
                 </div>`).join('')
             : "Henüz kayıt bulunmuyor.";
         document.getElementById('gecmis-modal').style.display = 'flex';
@@ -95,8 +100,14 @@
     function modalKapat() {
         document.getElementById('gecmis-modal').style.display = 'none';
     }
+
+    function gecmisiTemizle() {
+        if(confirm("Tüm geçmişi silmek istediğine emin misin?")) {
+            localStorage.removeItem('tokenGecmis');
+            modalAc();
+        }
+    }
 </script>
 
 </body>
 </html>
-
