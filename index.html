@@ -7,10 +7,16 @@
     <style>
         body { font-family: -apple-system, sans-serif; background-color: #0d1117; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .card { background: #ffffff; color: #333; padding: 25px; border-radius: 12px; width: 85%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); text-align: center; }
+        
+        /* Gizli ekranlar için */
         #parola-ekrani { display: block; }
         #panel-ekrani { display: none; }
+        
+        h2 { margin-top: 0; font-size: 1.2em; }
         input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         .btn { display: block; width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        
+        /* IP ve Diğer stiller */
         .ip-box { background: #f0f4f8; padding: 10px; border-radius: 6px; font-family: monospace; color: #d9534f; margin: 10px 0; border: 1px solid #ccd6dd; }
         hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
     </style>
@@ -33,41 +39,39 @@
 </div>
 
 <script>
-    // 'ün SHA-256 özeti
-    const HASHED_PASS = "4e18374d812328014526017b2b1a8d0554c3752e256b9c9f7a637d6e87f6540c";
-
-    async function sha256(message) {
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function parolaKontrol() {
+    // Parola Kontrolü
+    function parolaKontrol() {
         const girilen = document.getElementById('parola-input').value;
-        const girilenHash = await sha256(girilen);
-        
-        if (girilenHash === HASHED_PASS) {
+        if (girilen === "enbüyükbeşiktaş") {
             document.getElementById('parola-ekrani').style.display = 'none';
             document.getElementById('panel-ekrani').style.display = 'block';
-            ipKontrolEt();
+            ipKontrolEt(); // Panel açılınca IP'yi getir
         } else {
             alert("Hatalı parola!");
         }
     }
 
-    // ... (IP Kontrol ve Manuel Yönlendirme kodları aynı kalıyor)
+    // IP Kontrol Fonksiyonu
+    let sonIp = "";
     async function ipKontrolEt() {
         try {
-            const res = await fetch('https://api.ipify.org?format=json');
-            const data = await res.json();
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
             document.getElementById('ip-adresi').innerText = data.ip;
-        } catch(e) { document.getElementById('ip-adresi').innerText = "Hata!"; }
+            sonIp = data.ip;
+        } catch (e) {
+            document.getElementById('ip-adresi').innerText = "Hata!";
+        }
     }
 
+    // Manuel Yönlendirme
     function manuelYonlendir() {
-        const token = document.getElementById('manuel-token').value;
-        if(token) window.location.href = `kuppoys://login?token=${token}`;
+        const tokenDegeri = document.getElementById('manuel-token').value;
+        if(tokenDegeri) {
+            window.location.href = `kuppoys://login?token=${tokenDegeri}`;
+        } else {
+            alert("Lütfen geçerli bir token giriniz!");
+        }
     }
 </script>
 
